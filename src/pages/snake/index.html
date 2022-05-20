@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>贪吃蛇</title>
+  <style type="text/css">
+    *{
+      margin: 0;
+    }
+    body {
+      background: #fbf9f9;
+      color: #2d2d2d;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0;
+    }
+
+    .map {
+      width: 800px;
+      height: 500px;
+      background: #f0ecec;
+      border-radius: 8px;
+      border: 2px solid #acacac;
+      margin: 20px auto;
+    }
+
+    .button-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .begin {
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      padding: 6px 24px;
+      background: #f6f1f1;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .pause {
+      margin-left: 15px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      padding: 6px 24px;
+      background: #f6f1f1;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <h1>贪吃蛇</h1> -->
+  <div>
+    <div class="map"></div>
+    <div class="button-group">
+      <div class="begin">开始</div>
+      <div class="pause">暂停</div>
+    </div>
+  </div>
+</body>
+
+</html>
+<script>
+  let snakeBody = [] // 蛇身体节点
+  let snakeSize = 10 // 蛇身体节点大小
+  let direction = 'right' // 蛇头方向 'up、down、right、left'
+  let beforeDirection = 'right' // 操作前蛇头的方向
+  const snakeLength = 3 // 蛇长度
+
+  
+  function snake(snakeLength) {
+    while(snakeLength>0){
+      let node = {
+        x: snakeLength,
+        y: 2,
+        color: snakeLength === 1 ? '#f7155b':'#b75713',
+      }
+      snakeBody.push(node)
+      snakeLength--
+    }
+  }
+
+  function snakeInit(snakeBody) { // 初始化蛇
+    let nodes = []
+    snakeBody.map((item)=>{
+      let body = document.createElement('div')
+      body.style.width = item.x*snakeSize
+    })
+    
+  }
+  
+  (function () {
+    snake(snakeLength)
+  })()
+  console.log(snakeBody)
+  // 点击开始游戏
+  function game() {
+    // 生成小蛇
+    // 使用键盘监听事件
+    // 小蛇移动
+  }
+
+  // 监听键盘事件、上下左右
+  function listenKeyboard() {
+    document.addEventListener('keydown', e => {
+      switch (e.keyCode) {
+        case 37:
+          console.log('向左');
+          break;
+        case 38:
+          console.log('向上');
+          break;
+        case 39:
+          console.log('向右');
+          break;
+        case 40:
+          console.log('向下');
+          break;
+      }
+    })
+  }
+</script>
