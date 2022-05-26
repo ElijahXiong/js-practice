@@ -44,3 +44,13 @@ h1 {
   background: #f6f1f1;
   cursor: pointer;
 }
+
+.model {
+  width: 80px;
+  height: 35px;
+  border-radius: 9px;
+  background: #f6f1f1;
+  margin-left: 15px;
+  border: 1px solid #ccc;
+  text-align: center;
+}

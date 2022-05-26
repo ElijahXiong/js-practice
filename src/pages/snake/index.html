@@ -17,6 +17,12 @@
     <div class="button-group">
       <div class="begin" onclick="begin()">开始</div>
       <div class="pause" onclick="pause()">暂停</div>
+      <select onchange="handleModel(this)" class="model">
+        <option value="50">炼狱</option>
+        <option value="100">困难</option>
+        <option value="200" selected>正常</option>
+        <option value="500">简单</option>
+      </select>
     </div>
   </div>
 </body>
@@ -34,6 +40,12 @@
   let snakeElements = [] // 蛇Element
   let isPause = false
   let isBegin = false
+  let snakeSpeed = 80 // 小蛇移动速度 默认一百毫秒移动一次
+
+  function handleModel(val) { // 选择模式
+    let index = val.selectedIndex;
+    snakeSpeed = Number(val.options[index].value)
+  }
 
   function begin() {
     console.log(isBegin)
@@ -53,13 +65,7 @@
       clearInterval(setAction)
       isPause = !isPause
     } else{
-      setAction = setInterval(function() {
-        snakeMove()
-        snakeOver()
-        if(!isGameOver) {
-          snakeInit()
-        }
-      }, 100);
+      execute()
       isPause = !isPause
     }
   }
@@ -129,14 +135,19 @@
     // 使用键盘监听事件
     listenKeyboard()
     // 小蛇移动
+    execute()
+  }
+
+  function execute() { //执行
     setAction = setInterval(function() {
       snakeMove()
       snakeOver()
       if(!isGameOver) {
         snakeInit()
       }
-    }, 100);
+    }, snakeSpeed);
   }
+
   function snakeMove() { //移动
     if(food.x === snakeBody[0].x && food.y === snakeBody[0].y) { // 吃到食物
       let endNode = snakeBody[snakeBody.length-1]
@@ -214,7 +225,7 @@
         isGameOver = true
       }
       isBegin = false
-      alert('GAME OVER1')
+      alert('GAME OVER!')
     }
     if(headY<0 || headY >= maxY) {
       clearInterval(setAction)
@@ -222,11 +233,11 @@
         isGameOver = true
       }
       isBegin = false
-      alert('GAME OVER2')
+      alert('GAME OVER!')
     }
     // 撞到身体
     let isKnock = snakeBody.find((item, index) => {
-      if(index!==0) {
+      if(index) {
         return item.x === headX && item.y === headY
       }
     })
@@ -234,7 +245,14 @@
       isGameOver = true
       clearInterval(setAction)
       isBegin = false
-      alert('GAME OVER3')
+      alert('GAME OVER!')
+    }
+    // 是否吃完所有食物
+    if(maxX*maxY <= snakeBody.length) {
+      isGameOver = true
+      clearInterval(setAction)
+      isBegin = false
+      alert('Congratulate!')
     }
   }
 
