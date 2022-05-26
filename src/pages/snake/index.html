@@ -6,62 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>贪吃蛇</title>
-  <style type="text/css">
-    *{
-      margin: 0;
-    }
-    body {
-      background: #fbf9f9;
-      color: #2d2d2d;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 0;
-    }
-
-    .map {
-      width: 800px;
-      height: 500px;
-      background: #f0ecec;
-      border-radius: 8px;
-      border: 2px solid #acacac;
-      margin: 20px auto;
-    }
-
-    .button-group {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .begin {
-      border: 1px solid #ccc;
-      border-radius: 9px;
-      padding: 6px 24px;
-      background: #f6f1f1;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .pause {
-      margin-left: 15px;
-      border: 1px solid #ccc;
-      border-radius: 9px;
-      padding: 6px 24px;
-      background: #f6f1f1;
-      cursor: pointer;
-    }
-  </style>
+  <link type="text/css" href="./index.css" rel="stylesheet">
+  </link>
 </head>
 
 <body>
   <!-- <h1>贪吃蛇</h1> -->
   <div>
-    <div class="map"></div>
+    <div class="map" id="map"></div>
     <div class="button-group">
-      <div class="begin">开始</div>
-      <div class="pause">暂停</div>
+      <div class="begin" onclick="begin()">开始</div>
+      <div class="pause" onclick="pause()">暂停</div>
     </div>
   </div>
 </body>
@@ -69,42 +24,218 @@
 </html>
 <script>
   let snakeBody = [] // 蛇身体节点
-  let snakeSize = 10 // 蛇身体节点大小
+  let snakeSize = 10 // 节点大小
   let direction = 'right' // 蛇头方向 'up、down、right、left'
   let beforeDirection = 'right' // 操作前蛇头的方向
-  const snakeLength = 3 // 蛇长度
+  const mapElement = document.getElementById('map')
+  let setAction = '' // 执行
+  let isGameOver = false // 防止撞到后的再生成新dom
+  let food = {x: 5, y: 5}
+  let snakeElements = [] // 蛇Element
+  let isPause = false
+  let isBegin = false
 
-  
-  function snake(snakeLength) {
-    while(snakeLength>0){
-      let node = {
-        x: snakeLength,
-        y: 2,
-        color: snakeLength === 1 ? '#f7155b':'#b75713',
-      }
-      snakeBody.push(node)
-      snakeLength--
+  function begin() {
+    console.log(isBegin)
+    if(!isBegin) {
+      direction = 'right'
+      beforeDirection = 'right'
+      isGameOver = false
+      snake()
+      game()
+      isBegin = !isBegin
     }
   }
 
-  function snakeInit(snakeBody) { // 初始化蛇
-    let nodes = []
-    snakeBody.map((item)=>{
-      let body = document.createElement('div')
-      body.style.width = item.x*snakeSize
-    })
-    
+  function pause() {
+    if(!isBegin) return
+    if(!isPause ) {
+      clearInterval(setAction)
+      isPause = !isPause
+    } else{
+      setAction = setInterval(function() {
+        snakeMove()
+        snakeOver()
+        if(!isGameOver) {
+          snakeInit()
+        }
+      }, 100);
+      isPause = !isPause
+    }
   }
-  
-  (function () {
-    snake(snakeLength)
-  })()
-  console.log(snakeBody)
+
+  function snake() {
+    snakeBody = [{
+        x: 5,
+        y: 2,
+        color: '#f7155b'
+      },
+      {
+        x: 4,
+        y: 2,
+        color: '#77d205'
+      },
+      {
+        x: 3,
+        y: 2,
+        color: '#77d205'
+      },
+      {
+        x: 2,
+        y: 2,
+        color: '#77d205'
+      },
+      {
+        x: 1,
+        y: 2,
+        color: '#77d205'
+      },
+    ]
+  }
+
+  function snakeInit() { // 初始化蛇
+    deleteSnake()
+    let nodes = []
+    snakeBody.forEach((item) => {
+      let body = document.createElement('div')
+      body.style.width = snakeSize + 'px'
+      body.style.height = snakeSize + 'px'
+      body.style.background = item.color
+      body.style.borderRadius = '40%'
+      body.style.position = 'absolute'
+      body.style.left = item.x * snakeSize + 'px'
+      body.style.top = item.y * snakeSize + 'px'
+      mapElement.appendChild(body)
+      snakeElements.push(body)
+    })
+  }
+
+  function deleteSnake() { // 清除节点
+    // while (mapElement.hasChildNodes()) //当elem下还存在子节点时 循环继续
+    // {
+    //   mapElement.removeChild(mapElement.firstChild);
+    // }
+    for (var i = 0; i < snakeElements.length; i++) {
+      snakeElements[i].remove()
+    }
+    snakeElements.splice(0, snakeElements.length)
+  }
   // 点击开始游戏
   function game() {
     // 生成小蛇
+    snakeInit()
+    // 生成食物
+    productFood()
     // 使用键盘监听事件
+    listenKeyboard()
     // 小蛇移动
+    setAction = setInterval(function() {
+      snakeMove()
+      snakeOver()
+      if(!isGameOver) {
+        snakeInit()
+      }
+    }, 100);
+  }
+  function snakeMove() { //移动
+    if(food.x === snakeBody[0].x && food.y === snakeBody[0].y) { // 吃到食物
+      let endNode = snakeBody[snakeBody.length-1]
+      snakeBody.push({x: endNode.x, y: endNode.y, color: endNode.color}) // 随便赋值位置，反正会被覆盖掉
+      productFood()
+    }
+    const len = snakeBody.length-1
+    for (let i = len; i > 0; i--) { // 所有节点向前移动一个节点
+      snakeBody[i].x = snakeBody[i - 1].x
+      snakeBody[i].y = snakeBody[i - 1].y
+    }
+    switch (direction) { // 头节点移动方式
+      case 'right':
+        snakeBody[0].x++
+        break;
+      case 'left':
+        snakeBody[0].x--
+        break;
+      case 'up':
+        snakeBody[0].y--
+        break;
+      case 'down':
+        snakeBody[0].y++
+        break;
+    }
+  }
+
+  // 随机生成食物
+  function productFood() {
+    removeFood()
+    let maxX = (mapElement.offsetWidth-4)/snakeSize
+    let maxY = (mapElement.offsetHeight-4)/snakeSize
+    let foodX = 0
+    let foodY = 0
+    let inSnakeBody = true
+    while (inSnakeBody) {
+      foodX = Math.floor(Math.random()*maxX)
+      foodY = Math.floor(Math.random()*maxY)
+      inSnakeBody = snakeBody.find(item => {
+        return item.x === foodX && item.y === foodY
+      })
+    }
+    food.x = foodX
+    food.y = foodY
+    let foodElem = document.createElement('div')
+    foodElem.style.width = snakeSize + 'px'
+    foodElem.style.height = snakeSize + 'px'
+    foodElem.style.background = '#beac0c'
+    foodElem.style.position = 'absolute'
+    foodElem.style.left = foodX*snakeSize + 'px'
+    foodElem.style.top = foodY*snakeSize + 'px'
+    foodElem.style.borderRadius = '40%'
+    foodElem.id = 'food'
+    mapElement.appendChild(foodElem)
+  }
+
+  function removeFood() { // 移除食物
+    let eatFood = document.getElementById('food')
+    if(eatFood) {
+      mapElement.removeChild(eatFood)
+    }
+  }
+
+  // 判断蛇是否移动到边界、是否撞到身体
+  function snakeOver() {
+    let maxX = (mapElement.offsetWidth-4)/snakeSize
+    let maxY = (mapElement.offsetHeight-4)/snakeSize
+    let headX = snakeBody[0].x
+    let headY = snakeBody[0].y
+    // 边界
+    console.log('=====',maxX, maxY, headX, headY)
+    if(headX<0 || headX >= maxX) {
+      clearInterval(setAction)
+      if(headX >= maxX || headX <= 0 ) {
+        isGameOver = true
+      }
+      isBegin = false
+      alert('GAME OVER1')
+    }
+    if(headY<0 || headY >= maxY) {
+      clearInterval(setAction)
+      if(headY >= maxY || headY <= 0 ) {
+        isGameOver = true
+      }
+      isBegin = false
+      alert('GAME OVER2')
+    }
+    // 撞到身体
+    let isKnock = snakeBody.find((item, index) => {
+      if(index!==0) {
+        return item.x === headX && item.y === headY
+      }
+    })
+    if(isKnock) {
+      isGameOver = true
+      clearInterval(setAction)
+      isBegin = false
+      alert('GAME OVER3')
+    }
   }
 
   // 监听键盘事件、上下左右
@@ -112,16 +243,16 @@
     document.addEventListener('keydown', e => {
       switch (e.keyCode) {
         case 37:
-          console.log('向左');
+          beforeDirection = direction = beforeDirection === 'right' ? 'right' : 'left'
           break;
         case 38:
-          console.log('向上');
+          beforeDirection = direction = beforeDirection === 'down' ? 'down' : 'up'
           break;
         case 39:
-          console.log('向右');
+          beforeDirection = direction = beforeDirection === 'left' ? 'left' : 'right'
           break;
         case 40:
-          console.log('向下');
+          beforeDirection = direction = beforeDirection === 'up' ? 'up' : 'down'
           break;
       }
     })
