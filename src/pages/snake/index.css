@@ -54,3 +54,14 @@ h1 {
   border: 1px solid #ccc;
   text-align: center;
 }
+
+.snake {
+  border-radius: 40%;
+  position: absolute;
+}
+
+.food {
+  border-radius: 40%;  
+  background: #beac0c;
+  position: absolute;
+}
