@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>demoExcel</title>
+
+    <!-- dist目录下有很多个JS文件，一般情况下用xlsx.core.min.js就够了，xlsx.full.min.js则是包含了所有功能模块。 -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.core.min.js"></script>
+  </head>
+
+  <body>
+    <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" />
+    <div id="htmlout"></div>
+    <script src="./index.js"></script>
+  </body>
+</html>
+
+<style>
+  table {
+    border-collapse: collapse;
+    vertical-align: center;
+    text-align: center;
+  }
+  table,
+  th,
+  td {
+    border: 1px solid black;
+    padding: 10px 15px;
+  }
+</style>
