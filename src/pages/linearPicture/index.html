@@ -8,16 +8,22 @@
     
     <script src="https://unpkg.com/jsfeat@0.0.8/build/jsfeat.js"></script>
     <link type="text/css" href="./index.css" rel="stylesheet"></link>
+    
+    <script src="./textPopup.js"></script>
   </head>
 
   <body>
-    <img src="../../assert/linearPicture/model.jpg" id="img" />
-    <p>
-      <label for="fileImg">更换图片</label
-      ><input type="file" id="fileImg" accept="image/*" style="display: none" />
-    </p>
-    <canvas></canvas>
+    <div>
+      <div class="input-frame">
+        <label for="fileImg" class="button-frame">选择图片</label>
+        <input type="file" id="fileImg" accept="image/*" style="display: none" /> 
+      </div>
+      <div class="contant">
+        <img src="../../assert/linearPicture/model.jpg" id="img" />
+        <canvas></canvas>
+      </div>
+    </div>
     <script src="./index.js"></script>
-    <script src="./textPopup.js"></script>
+
   </body>
 </html>

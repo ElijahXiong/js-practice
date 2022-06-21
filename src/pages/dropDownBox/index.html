@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>多选下拉框</title>
+
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      ul li {
+        list-style: none;
+      }
+      .frame {
+        max-width: 230px;
+        min-height: 50px;
+        font-weight: 700;
+      }
+      .input-frame {
+        border: 1px solid #ccbcbc;
+        border-radius: 2px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 5px 0 5px;
+        user-select: none;
+        align-items: center;
+        min-height: 30px;
+      }
+      .checked-frame {
+        width: 85%;
+      }
+      .arrow-icon {
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        flex-shrink: 0;
+      }
+      .drop-down-frame {
+        display: none;
+        position: fixed;
+        width: 230px;
+        max-height: 150px;
+        margin-top: 2px;
+        overflow-y: scroll;
+        border-radius: 2px;
+        box-sizing: border-box;
+        background: #f4f1f1;
+      }
+      .drop-down-frame li {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        cursor: default;
+      }
+
+      .drop-down-frame li:hover {
+        color: #409eff;
+        background-color: #f5f7fa;
+      }
+
+      .label-frame {
+        display: inline-block;
+        max-width: 80%;
+        height: 20px;
+        line-height: 20px;
+        background-color: #ccc;
+        font-size: 11px;
+        font-weight: 400;
+        padding: 0 5px;
+        border-radius: 2px;
+        margin-top: 3px;
+        margin-right: 5px;
+      }
+      .label-frame p {
+        display: inline-block;
+        max-width: 88%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .close-icon {
+        margin-left: 3px;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        vertical-align: super;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="frame">
+      <div class="input-frame">
+        <div class="checked-frame" id="checkedValue"></div>
+        <div class="arrow-icon" onclick="changeSelectList()">
+          <img src="../../assert/dropDownBox/arrow.svg" alt="下拉按钮" />
+        </div>
+      </div>
+
+      <ul class="drop-down-frame" id="selectList">
+        <li id="value1">尾号 1</li>
+        <li id="value2">尾号 2</li>
+        <li id="value3">尾号 3</li>
+        <li id="value4">尾号 4</li>
+        <li id="value5">尾号 5</li>
+        <li id="value6">尾号 6</li>
+        <li id="value7">尾号 7</li>
+        <li id="value8">尾号 8</li>
+        <li id="value9">尾号 9</li>
+        <li id="value10">尾号 11</li>
+        <li id="value11">尾号 12</li>
+        <li id="value12">尾号 13</li>
+        <li id="value13">尾号 14</li>
+        <li id="value14">尾号 15</li>
+        <li id="value15">尾号 16</li>
+        <li id="value16">尾号 17</li>
+      </ul>
+    </div>
+
+    <script type="text/javascript">
+      let selectList = []
+      let isShowSelectList = false;
+      let selectListElement = document.getElementById("selectList");
+      let checkedValueElement = document.getElementById("checkedValue");
+
+      ;(function() {
+        checkedValueElement.addEventListener("click", listenerDeleteValue);
+      })()
+
+      function listenerDeleteValue(e) {
+        if (Number(e.target.id)) {
+          let index = selectList.indexOf(e.target.id)
+          selectList.splice(index,1)
+          document.getElementById(`select${e.target.id}`).remove()
+        }
+      }
+
+      function changeSelectList() {
+        if (isShowSelectList) {
+          // 关闭下拉
+          selectListElement.removeEventListener("click", listenerSelectValue);
+          isShowSelectList = false;
+          selectListElement.style.display = "none";
+        } else {
+          selectListElement.addEventListener("click", listenerSelectValue);
+          isShowSelectList = true;
+          selectListElement.style.display = "block";
+        }
+      }
+
+      function listenerSelectValue(e) {
+        let id = e.target.innerText.split(' ')[1]
+        if (id && !selectList.includes(id)) {
+          selectList.push(id)
+          checkedValueElement.innerHTML += `<div class="label-frame" id="select${id}">
+            <p>${e.target.innerText}</p>
+            <div class="close-icon">
+              <img src="../../assert/dropDownBox/close.svg" alt="删除选中" id="${id}"/>
+            </div>
+          </div>`;
+        } else {
+          console.log({e:{target:{id:id}}})
+          listenerDeleteValue({target:{id:id}})
+        }
+      }
+
+    </script>
+  </body>
+</html>

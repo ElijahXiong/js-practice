@@ -14,8 +14,8 @@ let fnCannyEdge = function (source, canvas, options) {
   let originWidth = source.naturalWidth || source.width;
   let originHeight = source.naturalHeight || source.height;
   // 最大尺寸限制
-  let maxWidth = 512,
-    maxHeight = 512;
+  let maxWidth = screen.availWidth -20;
+  let maxHeight = screen.availWidth -20;
   // 目标尺寸
   let width = originWidth,
     height = originHeight;
