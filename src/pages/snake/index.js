@@ -188,8 +188,8 @@ function productFood() {
   let inSnakeBody = true;
   // 当食物节点在蛇身体上再次生成
   while (inSnakeBody) {
-    foodX = Math.floor(Math.random() * (maxX+1));
-    foodY = Math.floor(Math.random() * (maxY+1)); 
+    foodX = Math.floor(Math.random() * (maxX + 1));
+    foodY = Math.floor(Math.random() * (maxY + 1));
     inSnakeBody = snakeBody.find((item) => {
       return item.x === foodX && item.y === foodY;
     });
@@ -253,40 +253,45 @@ function checkSnakeOver() {
  * 监听键盘事件、上下左右
  */
 function listenKeyboard() {
-  document.addEventListener("keydown", (e) => {
-    switch (e.key) {
-      // 向左，如果之前蛇头状态向右，蛇头不允许向左
-      case "ArrowLeft":
-        direction =
-          beforeDirection === directionType.right
-            ? directionType.right
-            : directionType.left;
-        beforeDirection = direction;
-        break;
-      // 向上
-      case "ArrowUp":
-        direction =
-          beforeDirection === directionType.down
-            ? directionType.down
-            : directionType.up;
-        beforeDirection = direction;
-        break;
-      // 向右
-      case "ArrowRight":
-        direction =
-          beforeDirection === directionType.left
-            ? directionType.left
-            : directionType.right;
-        beforeDirection = direction;
-        break;
-      // 向下
-      case "ArrowDown":
-        direction =
-          beforeDirection === directionType.up
-            ? directionType.up
-            : directionType.down;
-        beforeDirection = direction;
-        break;
-    }
+  let timerHandle = null;
+  document.addEventListener("keydown", function (e) {
+    clearTimeout(timerHandle);
+    // 防抖
+    timerHandle = setTimeout(() => {
+      switch (e.key) {
+        // 向左，如果之前蛇头状态向右，蛇头不允许向左
+        case "ArrowLeft":
+          direction =
+            beforeDirection === directionType.right
+              ? directionType.right
+              : directionType.left;
+          beforeDirection = direction;
+          break;
+        // 向上
+        case "ArrowUp":
+          direction =
+            beforeDirection === directionType.down
+              ? directionType.down
+              : directionType.up;
+          beforeDirection = direction;
+          break;
+        // 向右
+        case "ArrowRight":
+          direction =
+            beforeDirection === directionType.left
+              ? directionType.left
+              : directionType.right;
+          beforeDirection = direction;
+          break;
+        // 向下
+        case "ArrowDown":
+          direction =
+            beforeDirection === directionType.up
+              ? directionType.up
+              : directionType.down;
+          beforeDirection = direction;
+          break;
+      }
+    }, snakeSpeed);
   });
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>是否回文</title>
+
+    <style type="text/css"></style>
+  </head>
+
+  <body>
+    <div></div>
+    <script type="text/javascript">
+      // ("eye") 应返回一个布尔值。
+      // ("eye") 应返回 true。
+      // ("_eye") 应返回 true。
+      // ("race car") 应返回 true。
+      // ("not a palindrome") 应返回 false。
+      // ("A man, a plan, a canal. Panama") 应该返回 true。
+      // ("never odd or even") 应返回 true。
+      // ("nope") 应该返回 false。
+      // ("almostomla") 应返回 false。
+      // ("My age is 0, 0 si ega ym.") 应返回 true。
+      // ("1 eye for of 1 eye.") 应返回 false。
+      // ("0_0 (: /-\ :) 0-0") 应返回 true。
+      // ("five|\_/|four") 应返回 false。
+      let str = "eye";
+      // 去掉头部和尾部的特殊字符
+      let changeStr = str.replace(/[^A-Za-z0-9]/g, "");
+      let lowerStr = changeStr.toLocaleLowerCase();
+      let startStr = "";
+      let endStr = "";
+      let overturn = "";
+      let len = 0;
+      // 判断长度是否是偶数
+      if (changeStr.length % 2 === 0) {
+        len = changeStr.length;
+        startStr = lowerStr.slice(0, len / 2);
+        endStr = lowerStr.slice(len / 2);
+      } else {
+        len = changeStr.length - 1;
+        startStr = lowerStr.slice(0, len / 2);
+        endStr = lowerStr.slice(len / 2+1);
+      }
+      // 将后一半的内容反转
+      for (let i = endStr.length-1; i >= 0; i--) {
+        overturn = overturn + endStr[i];
+      }
+      if (startStr === overturn) {
+        console.log('true')
+        // return true;
+      } else {
+        console.log('false')
+        // return false;
+      }
+    </script>
+  </body>
+</html>

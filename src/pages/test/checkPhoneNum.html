@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>电话号码匹配</title>
+  </head>
+
+  <body>
+    <div></div>
+    <script type="text/javascript">
+      // 如果传入的字符串是一个有效的美国电话号码格式，则返回 true。
+      // 只要是有效的美国电话号码的格式，用户可以按照他们的方式填写表单中的电话号码。 以下是一些正确的例子（其他格式变形请参考以下例子）：
+      // 555-555-5555
+      // (555)555-5555
+      // （555）555-5555
+      // 555 555 5555
+      // 5555555555
+      // 1 555 555 5555
+      // 在这个挑战中，参数可能是 800-692-7753 或者 8oo-six427676;laskdjf 的号码。
+      // 你的任务是根据上面不同的格式组合，判断它是否为有效的电话号码。
+      // 其中，地区码（电话号码中的前三位）是必须的。 如果提供国家代码，则国家代码只能为 1。
+      // 如果传入的参数是有效的美国电话号码就返回 true，否则返回 false。
+      let phoneNum = "1 555-555-5555"; // -1 (757) 622-7382  55 55-55-555-5
+      // () - \s
+      let reg =
+        /[^A-Za-z`~!@#$%^&*_+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——+={}|《》？：“”【】、；‘'，。、]/;
+      let reg1 = /.*\(.*\).*/;
+      let reg2 = /.*[()].*/;
+      let reg3 = /^[\(-].*\)$/;
+      let reg4 = /^-/
+      if (
+        reg.test(phoneNum) &&
+        ((reg1.test(phoneNum) && !reg3.test(phoneNum)) || !reg2.test(phoneNum)) && !reg4.test(phoneNum)
+      ) {
+        let arr = phoneNum.split('-')
+        let a = arr.every(item=>{
+          return item.length > 2
+        })
+        if(!a){
+          console.log(false)
+          // return false
+        }
+        let str = phoneNum.replace(/[()-\s]/g, "");
+        if (str.length === 10) {
+          console.log("===1", true);
+          // return true
+        } else if (str.length === 11) {
+          if (str[0] === "1") {
+            console.log("===2", true);
+            // return true
+          } else {
+            console.log("===3", false);
+            // return false
+          }
+        } else {
+          console.log("===4", false);
+          // return false
+        }
+      } else {
+        console.log("===================2");
+        console.log("===5", false);
+        // return false
+      }
+    </script>
+  </body>
+</html>
