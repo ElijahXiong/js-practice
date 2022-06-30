@@ -26,13 +26,14 @@ let maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
 function handleModel(val) {
   // 选择模式
   let model = document.getElementById("model");
-  if (!isBegin) {
-    model.disabled = false;
-    let index = val.selectedIndex;
-    snakeSpeed = Number(val.options[index].value);
-  } else {
-    model.disabled = true;
-  }
+  // if (!isBegin) {
+  //   // model.disabled = false;
+  let index = val.selectedIndex;
+  snakeSpeed = Number(val.options[index].value);
+  //   console.log('==========1', snakeSpeed)
+  // } else {
+  //   // model.disabled = true;
+  // }
 }
 /**
  * 开始游戏
@@ -139,6 +140,7 @@ function game() {
  * 蛇在地图上移动
  */
 function execute() {
+  console.log('==========2', snakeSpeed)
   setAction = setInterval(function () {
     snakeMove();
     checkSnakeOver();
@@ -188,8 +190,8 @@ function productFood() {
   let inSnakeBody = true;
   // 当食物节点在蛇身体上再次生成
   while (inSnakeBody) {
-    foodX = Math.floor(Math.random() * (maxX + 1));
-    foodY = Math.floor(Math.random() * (maxY + 1));
+    foodX = Math.floor(Math.random() * ((maxX - 10)));
+    foodY = Math.floor(Math.random() * ((maxY - 10)));
     inSnakeBody = snakeBody.find((item) => {
       return item.x === foodX && item.y === foodY;
     });

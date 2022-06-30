@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>找零</title>
+  </head>
+
+  <body>
+    <div></div>
+    <script type="text/javascript">
+      let faceValue = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
+      let faceName = [
+        "Penny",
+        "Nickel",
+        "Dime",
+        "Quarter",
+        "ONE",
+        "FIVE",
+        "TEN",
+        "TWENTY",
+        "ONE HUNDRED",
+      ];
+      function checkCashRegister(price, cash, cid) {
+        // 要找零的钱
+        let changeNote = cash - price;
+        let change = { status: "", change: [] };
+        let allMoney = 0;
+        // 每个面值剩余金额
+        let residue = [];
+        cid.map((item) => {
+          residue.push(item[1]);
+          allMoney += item[1];
+        });
+        if (allMoney === changeNote) {
+          change.status = "CLOSED";
+          change.change = cid;
+        } else if (allMoney < changeNote) {
+          change.status = "INSUFFICIENT_FUNDS";
+        } else {
+          let indx = faceValue.findIndex((item) => {
+            if (changeNote <= item) {
+              return true;
+            }
+          });
+          let conformInx = indx===-1 ? faceValue.length-1 : indx - 1
+          console.log('===================changeNote', changeNote, conformInx)
+          // 从当前面值开始找零
+          do{
+            // residue[conformInx]  当前金额是否够，是否能刚好减完  faceValue[conformInx]  changeNote
+            let surplus = changeNote%faceValue[conformInx]
+            if (surplus === 0) { // 刚好取整
+              // 判断金额是否够
+              if(residue[conformInx] >= changeNote) {
+                change.change.push([faceName[conformInx], changeNote])
+              } else {
+                changeNote -= residue[conformInx]
+                change.change.push([faceName[conformInx], residue[conformInx]])
+              }
+            } else {
+              // 不能取整
+              if (changeNote-surplus <= residue[conformInx]) {
+                changeNote -= surplus
+                change.change.push([faceName[conformInx], changeNote-surplus])
+              } else {
+                changeNote -= residue[conformInx]
+                change.change.push([faceName[conformInx], residue[conformInx]])
+              }
+            }
+            conformInx--
+            console.log('===================change',change)
+          }while(changeNote > 0 && conformInx >= 0)
+          console.log('===================change',change)
+        }
+        return change;
+      }
+
+      checkCashRegister(19.5, 150, [
+        ["PENNY", 1.01],
+        ["NICKEL", 2.05],
+        ["DIME", 3.1],
+        ["QUARTER", 4.25],
+        ["ONE", 90],
+        ["FIVE", 55],
+        ["TEN", 20],
+        ["TWENTY", 60],
+        ["ONE HUNDRED", 100],
+      ]);
+    </script>
+  </body>
+</html>
