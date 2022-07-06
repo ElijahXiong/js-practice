@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>日历</title>
+    <link rel="stylesheet" href="./css/vue-calendar.css" />
+  </head>
+  <body>
+    <div class="calendar" id="app">
+      <div class="header">
+        <span class="yearMonth">{{currentYear}}年{{currentMonth}}月</span>
+        <div class="pic-frame">
+          <img
+            src="../../../assert/calendar/up.svg"
+            alt="上一月"
+            class="pic"
+            @click="getUpMonth"
+          />
+          <img
+            src="../../../assert/calendar/down.svg"
+            alt="下一月"
+            class="pic"
+            @click="getNextMonth"
+          />
+        </div>
+      </div>
+      <div class="week-header">
+        <span v-for="item in week" :key="item" class="week"> {{item}} </span>
+      </div>
+      <div class="body">
+        <div
+          v-for="(item,index) in currentDay"
+          :key="index"
+          class="fakeDay"
+        ></div>
+        <div
+          v-for="(item,index) in currentDateNum"
+          :key="index+currentDay"
+          class="day"
+          :class="{'day-frame': (nowDate===index+1)&&isNowDate}"
+        >
+          {{item}}
+        </div>
+      </div>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script src="./js/vue-calendar.js"></script>
+  </body>
+</html>

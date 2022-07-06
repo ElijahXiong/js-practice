@@ -140,12 +140,31 @@ function game() {
  * 蛇在地图上移动
  */
 function execute() {
-  console.log('==========2', snakeSpeed)
-  setAction = setInterval(function () {
-    snakeMove();
-    checkSnakeOver();
-    if (!isGameOver) createSnake();
-  }, snakeSpeed);
+  console.log("==========2", snakeSpeed);
+  let lastRefresh = 0
+  let ctTime = 100;
+  let randomImage = (time) => {
+    //requestAnimationFrame调用回调函数的时候，会传入一个时间戳
+    //通过这个时间戳进行比对来实现自定义延迟
+    if (time - lastRefresh > snakeSpeed) {
+      console.log('========',time)
+      lastRefresh = time;
+      snakeMove();
+      checkSnakeOver();
+      if (!isGameOver) createSnake();
+      ctTime--;
+    }
+    //将自身作为参数传入实现重复调用
+    requestAnimationFrame(randomImage);
+  };
+  //初次调用，获得time参数
+  //切记不能直接像randomImage()这样调用
+  requestAnimationFrame(randomImage);
+  // setAction = setInterval(function () {
+  //   snakeMove();
+  //   checkSnakeOver();
+  //   if (!isGameOver) createSnake();
+  // }, snakeSpeed);
 }
 /**
  * 蛇移动位置
@@ -190,8 +209,8 @@ function productFood() {
   let inSnakeBody = true;
   // 当食物节点在蛇身体上再次生成
   while (inSnakeBody) {
-    foodX = Math.floor(Math.random() * ((maxX - 10)));
-    foodY = Math.floor(Math.random() * ((maxY - 10)));
+    foodX = Math.floor(Math.random() * (maxX - 10));
+    foodY = Math.floor(Math.random() * (maxY - 10));
     inSnakeBody = snakeBody.find((item) => {
       return item.x === foodX && item.y === foodY;
     });
@@ -257,41 +276,37 @@ function checkSnakeOver() {
 function listenKeyboard() {
   let timerHandle = null;
   document.addEventListener("keydown", function (e) {
-    clearTimeout(timerHandle);
-    // // 防抖
+    // clearTimeout(timerHandle);
+    // 防抖
     timerHandle = setTimeout(() => {
       switch (e.key) {
         // 向左，如果之前蛇头状态向右，蛇头不允许向左
         case "ArrowLeft":
-          direction =
-            beforeDirection === directionType.right
-              ? directionType.right
-              : directionType.left;
-          beforeDirection = direction;
+          if (beforeDirection !== directionType.right) {
+            direction = directionType.left;
+            beforeDirection = direction;
+          }
           break;
         // 向上
         case "ArrowUp":
-          direction =
-            beforeDirection === directionType.down
-              ? directionType.down
-              : directionType.up;
-          beforeDirection = direction;
+          if (beforeDirection !== directionType.down) {
+            direction = directionType.up;
+            beforeDirection = direction;
+          }
           break;
         // 向右
         case "ArrowRight":
-          direction =
-            beforeDirection === directionType.left
-              ? directionType.left
-              : directionType.right;
-          beforeDirection = direction;
+          if (beforeDirection !== directionType.left) {
+            direction = directionType.right;
+            beforeDirection = direction;
+          }
           break;
         // 向下
         case "ArrowDown":
-          direction =
-            beforeDirection === directionType.up
-              ? directionType.up
-              : directionType.down;
-          beforeDirection = direction;
+          if (beforeDirection !== directionType.up) {
+            direction = directionType.down;
+            beforeDirection = direction;
+          }
           break;
       }
     }, snakeSpeed);

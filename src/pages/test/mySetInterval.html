@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="image"></div>
+
+    <script>
+      let lastRefresh = 0;
+      let ctTime = 100;
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = (function () {
+          return (
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (callback) {
+              window.setTimeout(callback, 1000 / 60);
+            }
+          );
+        })();
+      }
+      let randomImage = (time) => {
+        //requestAnimationFrame调用回调函数的时候，会传入一个时间戳
+        //通过这个时间戳进行比对来实现自定义延迟
+        if (time - lastRefresh > 1000) {
+          lastRefresh = time;
+          console.log(lastRefresh, time);
+          document.getElementById("image").innerText = ctTime;
+          ctTime--;
+        }
+        //将自身作为参数传入实现重复调用
+        requestAnimationFrame(randomImage);
+      };
+      //初次调用，获得time参数
+      //切记不能直接像randomImage()这样调用
+      requestAnimationFrame(randomImage);
+    </script>
+  </body>
+</html>

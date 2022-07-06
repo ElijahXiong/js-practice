@@ -33,6 +33,9 @@ let endYear = 0; // 年列表尾部
 const dayElement = document.getElementById("day");
 const weekElement = document.getElementById("week");
 
+/**
+ * 初始化数据
+ */
 ;(function initData() {
   let current = new Date();
   startYear = checkedYear = currentYear = current.getFullYear();
@@ -44,8 +47,10 @@ const weekElement = document.getElementById("week");
   setInterval(getCurrentTime, 1000);
 })()
 
+/**
+ * 选中年月
+ */
 function selectDate() {
-  // 选中年月
   // 清除列表
   if (currentPanel === "year") return;
   deleteDom(dayElement);
@@ -137,7 +142,7 @@ function goYearPanel() {
 }
 /**
  * 监听年的点击事件
- * @param {*} e 点击的element
+ * @param {Element} e 点击的element
  */
 function listenerClickYear(e) {
   let year = Number(e.target.id);
@@ -169,7 +174,7 @@ function setMonth() {
 }
 /**
  * 清除节点
- * @param {} elem element
+ * @param {Element} elem element
  */
 function deleteDom(elem) {
   while (elem.hasChildNodes()) {
@@ -179,12 +184,13 @@ function deleteDom(elem) {
 }
 /**
  * 一个月天数列表
- * @param {*} current 月份
+ * @param {Date} current 月份
  */
 function getDateList(current) {
   dayElement.className = "day";
   deleteDom(dayElement);
   let month = current.getMonth() + 1;
+
   if (!weekElement.hasChildNodes()) {
     WEEK.forEach((item) => {
       let div = document.createElement("div");
@@ -193,19 +199,23 @@ function getDateList(current) {
       weekElement.appendChild(div);
     });
   }
+
   let grid = 1;
   current.setMonth(month);
   current.setDate(0);
   let endDay = current.getDate(); // 最后一天
   current.setDate(1);
   let startDay = 0; // 当月开始天数
+
   if (current.getDay() === 0) {
     startDay = 6;
   } else {
     startDay = current.getDay() - 1; // 当月第一天的星期 1，2，3，4，5，6，0
   }
+
   while (grid <= 42) {
     let div = document.createElement("div");
+
     if (grid > startDay && grid - startDay <= endDay) {
       div.className =
         currentDay === grid - startDay &&

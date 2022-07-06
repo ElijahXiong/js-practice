@@ -1,0 +1,67 @@
+*{
+  margin: 0;
+}
+body {
+  background: #fbf9f9;
+  color: #2d2d2d;
+}
+
+h1 {
+  text-align: center;
+  margin: 0;
+}
+
+.map {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: #f0ecec;
+  border-radius: 8px;
+  border: 2px solid #acacac;
+  margin: 20px auto;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.begin {
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  padding: 6px 24px;
+  background: #f6f1f1;
+  cursor: pointer;
+  position: relative;
+}
+
+.pause {
+  margin-left: 15px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  padding: 6px 24px;
+  background: #f6f1f1;
+  cursor: pointer;
+}
+
+.model {
+  width: 80px;
+  height: 35px;
+  border-radius: 9px;
+  background: #f6f1f1;
+  margin-left: 15px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.snake {
+  border-radius: 40%;
+  position: absolute;
+}
+
+.food {
+  border-radius: 40%;  
+  background: #beac0c;
+  position: absolute;
+}

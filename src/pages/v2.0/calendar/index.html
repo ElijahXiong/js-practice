@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日历</title>
+  <link type="text/css" href="./css/index.css" rel="stylesheet"></link>
+</head>
+
+<body>
+  <div class="calender-frame">
+    <div class="content">
+      <div class="time-frame">
+        <div class='time' id="time">--:--:--</div>
+        <div class='date' id="date" onclick="goCurrentDate()">---- 年 -- 月 -- 日</div>
+      </div>
+      <div class="select-frame">
+        <div class="select-time" id="selectTime" onclick="selectDate()">---- 年 -- 月</div>
+        <div class="icon-frame">
+          <div class="icon" onclick="handleUp()">
+            <img src="../../../assert/calendar/up.svg" alt="">
+          </div>
+          <div class="icon" onclick="handleDown()">
+            <img src="../../../assert/calendar/down.svg" alt="">
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="week" id="week"></div>
+        <div id="day"></div>
+      </div>
+    </div>
+  </div>
+  <script src="./js/index.js"></script>
+</body>
+</html>
