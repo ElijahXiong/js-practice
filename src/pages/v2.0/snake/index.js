@@ -19,26 +19,25 @@ let snakeSpeed = 80; // 小蛇移动速度 默认一百毫秒移动一次
 let pauseElement = document.getElementById("pause"); // 暂停element
 let maxX = (mapElement.offsetWidth - 4) / snakeSize; // 地图最大的x轴
 let maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
+let isOverGame = false; // 是否结束游戏
+let raf = null; // requestAnimationFrame的id
+let model = document.getElementById("model"); // 模式element
 /**
  * 选择模式
  * @param {*} val 执行间隔
  */
 function handleModel(val) {
   // 选择模式
-  let model = document.getElementById("model");
-  // if (!isBegin) {
-  //   // model.disabled = false;
-  let index = val.selectedIndex;
-  snakeSpeed = Number(val.options[index].value);
-  //   console.log('==========1', snakeSpeed)
-  // } else {
-  //   // model.disabled = true;
-  // }
+  if (!isPause) {
+    let index = val.selectedIndex;
+    snakeSpeed = Number(val.options[index].value);
+  }
 }
 /**
  * 开始游戏
  */
 function begin() {
+  console.log("===============", isBegin);
   if (!isBegin) {
     direction = directionType.right;
     beforeDirection = directionType.right;
@@ -46,20 +45,27 @@ function begin() {
     initSnakeBody();
     game();
     isBegin = !isBegin;
+    isOverGame = false;
+    model.disabled = true;
   }
-}
+};
 /**
  * 暂停/继续
  */
 function pause() {
   if (!isBegin) return;
   if (!isPause) {
-    clearInterval(setAction);
+    model.disabled = false;
+    isOverGame = true;
     pauseElement.innerText = "继续";
+    isOverGame = true;
     isPause = !isPause;
   } else {
+    // 继续游戏
     execute();
+    model.disabled = true;
     isPause = !isPause;
+    isOverGame = false;
     pauseElement.innerText = "暂停";
   }
 }
@@ -141,13 +147,12 @@ function game() {
  */
 function execute() {
   console.log("==========2", snakeSpeed);
-  let lastRefresh = 0
+  let lastRefresh = 0;
   let ctTime = 100;
   let randomImage = (time) => {
     //requestAnimationFrame调用回调函数的时候，会传入一个时间戳
     //通过这个时间戳进行比对来实现自定义延迟
     if (time - lastRefresh > snakeSpeed) {
-      console.log('========',time)
       lastRefresh = time;
       snakeMove();
       checkSnakeOver();
@@ -155,16 +160,14 @@ function execute() {
       ctTime--;
     }
     //将自身作为参数传入实现重复调用
-    requestAnimationFrame(randomImage);
+    raf = requestAnimationFrame(randomImage);
+    if (isOverGame) {
+      cancelAnimationFrame(raf);
+    }
   };
   //初次调用，获得time参数
   //切记不能直接像randomImage()这样调用
   requestAnimationFrame(randomImage);
-  // setAction = setInterval(function () {
-  //   snakeMove();
-  //   checkSnakeOver();
-  //   if (!isGameOver) createSnake();
-  // }, snakeSpeed);
 }
 /**
  * 蛇移动位置
@@ -242,7 +245,7 @@ function checkSnakeOver() {
   let headY = snakeBody[0].y;
   // 边界
   if (headX < 0 || headX >= maxX || headY < 0 || headY >= maxY) {
-    clearInterval(setAction);
+    isOverGame = true;
     if (headX >= maxX || headX <= 0 || headY >= maxY || headY <= 0) {
       isGameOver = true;
     }
@@ -256,7 +259,7 @@ function checkSnakeOver() {
   // 撞到身体
   if (isKnock) {
     isGameOver = true;
-    clearInterval(setAction);
+    isOverGame = true;
     isBegin = false;
     alert("GAME OVER!");
   }
@@ -264,7 +267,7 @@ function checkSnakeOver() {
   // 是否吃完所有食物
   if (maxX * maxY <= snakeBody.length) {
     isGameOver = true;
-    clearInterval(setAction);
+    isOverGame = true;
     isBegin = false;
     alert("Congratulate!");
   }
@@ -276,7 +279,8 @@ function checkSnakeOver() {
 function listenKeyboard() {
   let timerHandle = null;
   document.addEventListener("keydown", function (e) {
-    // clearTimeout(timerHandle);
+    console.log("==============e", e.key);
+    clearTimeout(timerHandle);
     // 防抖
     timerHandle = setTimeout(() => {
       switch (e.key) {
@@ -308,7 +312,35 @@ function listenKeyboard() {
             beforeDirection = direction;
           }
           break;
+        // 向下
+        case "ArrowDown":
+          if (beforeDirection !== directionType.up) {
+            direction = directionType.down;
+            beforeDirection = direction;
+          }
+          break;
       }
     }, snakeSpeed);
   });
 }
+
+/**
+ * 监听键盘事件开始暂停
+ */
+
+window.onload = function listenBegin() {
+  document.addEventListener("keydown", function (e) {
+    switch (e.key) {
+      // 开始游戏
+      case " ":
+        console.log("=============空格");
+        pause();
+        break;
+      // 空格键暂停、继续
+      case "Enter":
+        console.log("=============确定");
+        begin();
+        break;
+    }
+  });
+};
