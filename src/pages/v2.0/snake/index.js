@@ -32,7 +32,7 @@ let currentScore = 0; // 当前分数
  */
 function handleModel(val) {
   // 选择模式
-  if (!isPause) {
+  if (isPause) {
     let index = val.selectedIndex;
     snakeSpeed = Number(val.options[index].value);
   }
