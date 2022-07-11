@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>贪吃蛇</title>
+  <link type="text/css" href="./index.css" rel="stylesheet">
+  </link>
+
+</head>
+
+<body>
+  <div>
+    <div>
+      <p><span>最高分数: </span><span id="highestScore"> 0 </span><span> 分</span></p>
+      <p><span>当前分数: </span><span id="currentScore"> 0 </span><span> 分</span></p>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="button-group">
+      <div class="begin" onclick="begin()">开始</div>
+      <div class="pause" onclick="pause()" id="pause">暂停</div>
+      <select onchange="handleModel(this)" class="model" id="model">
+        <option value="50">炼狱</option>
+        <option value="100">困难</option>
+        <option value="200" selected>正常</option>
+        <option value="500">简单</option>
+      </select>
+    </div>
+  </div>
+  <script src="./index.js"></script>
+</body>
+
+</html>

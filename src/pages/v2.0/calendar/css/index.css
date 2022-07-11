@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+}
+
+.calender-frame {
+  cursor: default;
+  width: 100%;
+  font-size: 14px;
+}
+
+.content {
+  width: 260px;
+  background-color: #dddddd;
+  margin: 0 auto;
+  margin-top: 100px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.time-frame {
+  height: 90px;
+  border-bottom: 1px solid #ccc;
+}
+
+.time {
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 5px;
+}
+
+.date {
+  color: #257f0b;
+}
+
+.select-frame {
+  display: flex;
+  justify-content: space-between;
+  height: 45px;
+  align-items: center;
+}
+
+.select-frame .select-time {
+  color: #515151;
+}
+
+.select-frame .icon-frame {
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
+}
+
+.icon-frame .icon {
+  width: 25px;
+  height: 25px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 14%);
+  grid-column-gap: 2px;
+  margin-bottom: 5px;
+}
+
+.day-grid {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  text-align: center;
+  line-height: 30px;
+}
+
+.current-month {
+  width: 52px;
+  height: 52px;
+  border: 2px solid rgb(255 255 255);
+  background-color: #1f670b;
+  color: #fff;
+  text-align: center;
+  line-height: 52px;
+}
+
+.month-grid {
+  width: 52px;
+  height: 52px;
+  border: 2px solid rgba(255, 255, 255, 0);
+  text-align: center;
+  line-height: 52px;
+}
+
+.month .month-grid:hover {
+  border: 2px solid #fff;
+}
+
+.month {
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+  grid-row-gap: 5px;
+  grid-column-gap: 2px;
+}
+
+.day {
+  display: grid;
+  grid-template-columns: repeat(7, 14%);
+  grid-row-gap: 5px;
+  grid-column-gap: 2px;
+}
+
+.day .day-grid:hover {
+  border: 1px solid #fff;
+}
+
+.current-day {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgb(255 255 255);
+  background-color: #1f670b;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
+}
+
+.blank-grid {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0);
+}
