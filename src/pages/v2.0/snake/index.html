@@ -12,10 +12,12 @@
 </head>
 
 <body>
-  <!-- <h1>贪吃蛇</h1> -->
   <div>
-    <div class="map" id="map">
+    <div>
+      <p><span>最高分数: </span><span id="highestScore"> 0 </span><span> 分</span></p>
+      <p><span>当前分数: </span><span id="currentScore"> 0 </span><span> 分</span></p>
     </div>
+    <div class="map" id="map"></div>
     <div class="button-group">
       <div class="begin" onclick="begin()">开始</div>
       <div class="pause" onclick="pause()" id="pause">暂停</div>

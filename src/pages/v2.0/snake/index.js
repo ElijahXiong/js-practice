@@ -15,13 +15,17 @@ let food = { x: 5, y: 5 }; // 食物位置
 let snakeElements = []; // 蛇Element
 let isPause = false; // 暂停、继续
 let isBegin = false; // 开始
-let snakeSpeed = 80; // 小蛇移动速度 默认一百毫秒移动一次
+let snakeSpeed = 200; // 小蛇移动速度 默认一百毫秒移动一次
 let pauseElement = document.getElementById("pause"); // 暂停element
 let maxX = (mapElement.offsetWidth - 4) / snakeSize; // 地图最大的x轴
 let maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
 let isOverGame = false; // 是否结束游戏
 let raf = null; // requestAnimationFrame的id
 let model = document.getElementById("model"); // 模式element
+let highestScoreELe = document.getElementById("highestScore"); // 最高分数element
+let currentScoreELe = document.getElementById("currentScore"); // 当前分数element
+let highestScore = Number(localStorage.getItem("highestScore") || 0);
+let currentScore = 0; // 当前分数
 /**
  * 选择模式
  * @param {*} val 执行间隔
@@ -37,7 +41,6 @@ function handleModel(val) {
  * 开始游戏
  */
 function begin() {
-  console.log("===============", isBegin);
   if (!isBegin) {
     direction = directionType.right;
     beforeDirection = directionType.right;
@@ -47,8 +50,9 @@ function begin() {
     isBegin = !isBegin;
     isOverGame = false;
     model.disabled = true;
+    currentScore = 0;
   }
-};
+}
 /**
  * 暂停/继续
  */
@@ -127,10 +131,6 @@ function createSnake() {
 function deleteSnake() {
   let snakeFrame = document.getElementById("snake");
   if (snakeFrame) snakeFrame.remove();
-  // for (var i = 0; i < snakeElements.length; i++) {
-  //   snakeElements[i].remove();
-  // }
-  // snakeElements = [];
 }
 /**
  * 开始游戏
@@ -146,7 +146,6 @@ function game() {
  * 蛇在地图上移动
  */
 function execute() {
-  console.log("==========2", snakeSpeed);
   let lastRefresh = 0;
   let ctTime = 100;
   let randomImage = (time) => {
@@ -179,6 +178,9 @@ function snakeMove() {
     // 可以随便赋值位置，反正会被覆盖掉
     snakeBody.push({ x: endNode.x, y: endNode.y, color: endNode.color });
     productFood();
+    currentScore = currentScore + 1;
+    // 记录分数
+    currentScoreELe.innerText = currentScore;
   }
 
   for (let i = snakeBody.length - 1; i > 0; i--) {
@@ -236,7 +238,18 @@ function removeFood() {
   let eatFood = document.getElementById("food");
   if (eatFood) eatFood.remove();
 }
-
+/**
+ * 判断是否打破记录、状态更改
+ */
+function newRocord() {
+  isOverGame = true;
+  isGameOver = true;
+  isBegin = false;
+  if (highestScore < currentScore) {
+    localStorage.setItem("highestScore", currentScore);
+    highestScoreELe.innerText = currentScore;
+  }
+}
 /**
  * 检查蛇是否移动到边界、是否撞到身体
  */
@@ -245,11 +258,7 @@ function checkSnakeOver() {
   let headY = snakeBody[0].y;
   // 边界
   if (headX < 0 || headX >= maxX || headY < 0 || headY >= maxY) {
-    isOverGame = true;
-    if (headX >= maxX || headX <= 0 || headY >= maxY || headY <= 0) {
-      isGameOver = true;
-    }
-    isBegin = false;
+    newRocord();
     alert("GAME OVER!");
   }
 
@@ -258,17 +267,13 @@ function checkSnakeOver() {
   });
   // 撞到身体
   if (isKnock) {
-    isGameOver = true;
-    isOverGame = true;
-    isBegin = false;
+    newRocord();
     alert("GAME OVER!");
   }
 
   // 是否吃完所有食物
   if (maxX * maxY <= snakeBody.length) {
-    isGameOver = true;
-    isOverGame = true;
-    isBegin = false;
+    newRocord();
     alert("Congratulate!");
   }
 }
@@ -279,7 +284,6 @@ function checkSnakeOver() {
 function listenKeyboard() {
   let timerHandle = null;
   document.addEventListener("keydown", function (e) {
-    console.log("==============e", e.key);
     clearTimeout(timerHandle);
     // 防抖
     timerHandle = setTimeout(() => {
@@ -325,20 +329,19 @@ function listenKeyboard() {
 }
 
 /**
- * 监听键盘事件开始暂停
+ * 进入页面的部署；
+ * 监听开始暂停键盘事件、最高分数
  */
-
-window.onload = function listenBegin() {
+window.onload = function initDeployment() {
+  highestScoreELe.innerText = highestScore;
   document.addEventListener("keydown", function (e) {
     switch (e.key) {
       // 开始游戏
       case " ":
-        console.log("=============空格");
         pause();
         break;
       // 空格键暂停、继续
       case "Enter":
-        console.log("=============确定");
         begin();
         break;
     }
