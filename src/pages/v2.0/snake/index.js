@@ -5,25 +5,23 @@ const directionType = {
   down: "down",
 };
 let snakeBody = []; // 蛇身体节点
-let snakeSize = 10; // 节点大小
+const snakeSize = 10; // 节点大小
 let direction = directionType.right; // 蛇头方向 'up、down、right、left'
 let beforeDirection = directionType.right; // 操作前蛇头的方向
 const mapElement = document.getElementById("map"); // 地element
-let setAction = ""; // 执行
-let isGameOver = false; // 防止撞到后的再生成新dom
 let food = { x: 5, y: 5 }; // 食物位置
 let snakeElements = []; // 蛇Element
 let isPause = true; // 暂停、继续
 let isBegin = false; // 开始
 let snakeSpeed = 200; // 小蛇移动速度 默认一百毫秒移动一次
-let pauseElement = document.getElementById("pause"); // 暂停element
-let maxX = (mapElement.offsetWidth - 4) / snakeSize; // 地图最大的x轴
-let maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
+const pauseElement = document.getElementById("pause"); // 暂停element
+const maxX = (mapElement.offsetWidth - 4) / snakeSize; // 地图最大的x轴
+const maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
 let isOverGame = false; // 是否结束游戏
 let raf = null; // requestAnimationFrame的id
-let model = document.getElementById("model"); // 模式element
-let highestScoreELe = document.getElementById("highestScore"); // 最高分数element
-let currentScoreELe = document.getElementById("currentScore"); // 当前分数element
+const model = document.getElementById("model"); // 模式element
+const highestScoreELe = document.getElementById("highestScore"); // 最高分数element
+const currentScoreELe = document.getElementById("currentScore"); // 当前分数element
 let highestScore = Number(localStorage.getItem("highestScore") || 0);
 let currentScore = 0; // 当前分数
 let mapNode = []; // 地图的节点
@@ -34,7 +32,7 @@ let mapNode = []; // 地图的节点
 function handleModel(val) {
   // 选择模式
   if (isPause) {
-    let index = val.selectedIndex;
+    const index = val.selectedIndex;
     snakeSpeed = Number(val.options[index].value);
   }
 }
@@ -45,10 +43,9 @@ function begin() {
   if (!isBegin) {
     direction = directionType.right;
     beforeDirection = directionType.right;
-    isGameOver = false;
     initSnakeBody();
     game();
-    isPause = false
+    isPause = false;
     isBegin = true;
     isOverGame = false;
     model.disabled = true;
@@ -64,7 +61,6 @@ function pause() {
     model.disabled = false;
     isOverGame = true;
     pauseElement.innerText = "继续";
-    isOverGame = true;
     isPause = !isPause;
   } else {
     // 继续游戏
@@ -112,11 +108,11 @@ function initSnakeBody() {
  */
 function createSnake() {
   deleteSnake();
-  let snake = document.createElement("div");
+  const snake = document.createElement("div");
   snake.id = "snake";
   mapElement.appendChild(snake);
   snakeBody.forEach((item) => {
-    let snakeNode = document.createElement("div");
+    const snakeNode = document.createElement("div");
     snakeNode.className = "snake";
     snakeNode.style.width = snakeSize + "px";
     snakeNode.style.height = snakeSize + "px";
@@ -131,7 +127,7 @@ function createSnake() {
  * 删除蛇的节点
  */
 function deleteSnake() {
-  let snakeFrame = document.getElementById("snake");
+  const snakeFrame = document.getElementById("snake");
   if (snakeFrame) snakeFrame.remove();
 }
 /**
@@ -149,7 +145,6 @@ function game() {
  */
 function execute() {
   let lastRefresh = 0;
-  let ctTime = 100;
   let randomImage = (time) => {
     //requestAnimationFrame调用回调函数的时候，会传入一个时间戳
     //通过这个时间戳进行比对来实现自定义延迟
@@ -157,8 +152,7 @@ function execute() {
       lastRefresh = time;
       snakeMove();
       checkSnakeOver();
-      if (!isGameOver) createSnake();
-      ctTime--;
+      if (!isOverGame) createSnake();
     }
     //将自身作为参数传入实现重复调用
     raf = requestAnimationFrame(randomImage);
@@ -176,7 +170,7 @@ function execute() {
 function snakeMove() {
   if (food.x === snakeBody[0].x && food.y === snakeBody[0].y) {
     // 吃到食物
-    let endNode = snakeBody[snakeBody.length - 1];
+    const endNode = snakeBody[snakeBody.length - 1];
     // 可以随便赋值位置，反正会被覆盖掉
     snakeBody.push({ x: endNode.x, y: endNode.y, color: endNode.color });
     productFood();
@@ -215,21 +209,19 @@ function productFood() {
   let blankNode = [];
   for (outItem of mapNode) {
     // 判断蛇身体在哪些节点上
-    let isBlank = snakeBody.find((inItem) => {
-      if (outItem[0] === inItem.x && outItem[1] === inItem.y) {
-        return true;
-      }
-    });
+    const isBlank = snakeBody.find(
+      (inItem) => outItem[0] === inItem.x && outItem[1] === inItem.y
+    );
     if (!isBlank) {
       blankNode.push(outItem);
     }
   }
-  let index = Math.floor(Math.random() * (blankNode.length - 1));
-  let foodX = blankNode[index][0];
-  let foodY = blankNode[index][1];
+  const index = Math.floor(Math.random() * (blankNode.length - 1));
+  const foodX = blankNode[index][0];
+  const foodY = blankNode[index][1];
   food.x = foodX;
   food.y = foodY;
-  let foodElem = document.createElement("div");
+  const foodElem = document.createElement("div");
   foodElem.className = "food";
   foodElem.style.width = snakeSize + "px";
   foodElem.style.height = snakeSize + "px";
@@ -242,7 +234,7 @@ function productFood() {
  * 移除食物
  */
 function removeFood() {
-  let eatFood = document.getElementById("food");
+  const eatFood = document.getElementById("food");
   if (eatFood) eatFood.remove();
 }
 /**
@@ -250,7 +242,6 @@ function removeFood() {
  */
 function newRocord() {
   isOverGame = true;
-  isGameOver = true;
   isBegin = false;
   isPause = true;
   model.disabled = false;
@@ -263,15 +254,15 @@ function newRocord() {
  * 检查蛇是否移动到边界、是否撞到身体
  */
 function checkSnakeOver() {
-  let headX = snakeBody[0].x;
-  let headY = snakeBody[0].y;
+  const headX = snakeBody[0].x;
+  const headY = snakeBody[0].y;
   // 边界
   if (headX < 0 || headX >= maxX || headY < 0 || headY >= maxY) {
     newRocord();
     alert("GAME OVER!");
   }
 
-  let isKnock = snakeBody.find((item, index) => {
+  const isKnock = snakeBody.find((item, index) => {
     if (index) return item.x === headX && item.y === headY;
   });
   // 撞到身体
