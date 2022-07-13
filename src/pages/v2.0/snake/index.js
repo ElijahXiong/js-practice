@@ -26,6 +26,7 @@ let highestScoreELe = document.getElementById("highestScore"); // 最高分数el
 let currentScoreELe = document.getElementById("currentScore"); // 当前分数element
 let highestScore = Number(localStorage.getItem("highestScore") || 0);
 let currentScore = 0; // 当前分数
+let mapNode = []; // 地图的节点
 /**
  * 选择模式
  * @param {*} val 执行间隔
@@ -182,7 +183,7 @@ function snakeMove() {
     // 记录分数
     currentScoreELe.innerText = currentScore;
   }
-
+  // TODO: 蛇头部加一，删除尾部
   for (let i = snakeBody.length - 1; i > 0; i--) {
     // 所有节点向前移动一个节点
     snakeBody[i].x = snakeBody[i - 1].x;
@@ -208,18 +209,23 @@ function snakeMove() {
  * 随机生成食物
  */
 function productFood() {
+  //空节点
   removeFood();
-  let foodX = 0;
-  let foodY = 0;
-  let inSnakeBody = true;
-  // 当食物节点在蛇身体上再次生成
-  while (inSnakeBody) {
-    foodX = Math.floor(Math.random() * (maxX - 10));
-    foodY = Math.floor(Math.random() * (maxY - 10));
-    inSnakeBody = snakeBody.find((item) => {
-      return item.x === foodX && item.y === foodY;
+  let blankNode = [];
+  for (outItem of mapNode) {
+    // 判断蛇身体在哪些节点上
+    let isBlank = snakeBody.find((inItem) => {
+      if (outItem[0] === inItem.x && outItem[1] === inItem.y) {
+        return true;
+      }
     });
+    if (!isBlank) {
+      blankNode.push(outItem);
+    }
   }
+  let index = Math.floor(Math.random() * (blankNode.length - 1));
+  let foodX = blankNode[index][0];
+  let foodY = blankNode[index][1];
   food.x = foodX;
   food.y = foodY;
   let foodElem = document.createElement("div");
@@ -333,6 +339,11 @@ function listenKeyboard() {
  * 监听开始暂停键盘事件、最高分数
  */
 window.onload = function initDeployment() {
+  for (let x = 0; x <= 79; x++) {
+    for (let y = 0; y <= 49; y++) {
+      mapNode.push([x, y]);
+    }
+  }
   highestScoreELe.innerText = highestScore;
   document.addEventListener("keydown", function (e) {
     switch (e.key) {
