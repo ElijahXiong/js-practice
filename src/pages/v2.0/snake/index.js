@@ -13,7 +13,7 @@ let setAction = ""; // 执行
 let isGameOver = false; // 防止撞到后的再生成新dom
 let food = { x: 5, y: 5 }; // 食物位置
 let snakeElements = []; // 蛇Element
-let isPause = false; // 暂停、继续
+let isPause = true; // 暂停、继续
 let isBegin = false; // 开始
 let snakeSpeed = 200; // 小蛇移动速度 默认一百毫秒移动一次
 let pauseElement = document.getElementById("pause"); // 暂停element
@@ -48,7 +48,8 @@ function begin() {
     isGameOver = false;
     initSnakeBody();
     game();
-    isBegin = !isBegin;
+    isPause = false
+    isBegin = true;
     isOverGame = false;
     model.disabled = true;
     currentScore = 0;
@@ -251,6 +252,8 @@ function newRocord() {
   isOverGame = true;
   isGameOver = true;
   isBegin = false;
+  isPause = true;
+  model.disabled = false;
   if (highestScore < currentScore) {
     localStorage.setItem("highestScore", currentScore);
     highestScoreELe.innerText = currentScore;
