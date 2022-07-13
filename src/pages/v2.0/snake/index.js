@@ -174,7 +174,7 @@ function snakeMove() {
     // 可以随便赋值位置，反正会被覆盖掉
     snakeBody.push({ x: endNode.x, y: endNode.y, color: endNode.color });
     productFood();
-    currentScore = currentScore + 1;
+    currentScore = currentScore++;
     // 记录分数
     currentScoreELe.innerText = currentScore;
   }
@@ -206,16 +206,12 @@ function snakeMove() {
 function productFood() {
   //空节点
   removeFood();
-  let blankNode = [];
-  for (outItem of mapNode) {
+  const blankNode = mapNode.filter(outItem=>{
     // 判断蛇身体在哪些节点上
-    const isBlank = snakeBody.find(
+    return !snakeBody.find(
       (inItem) => outItem[0] === inItem.x && outItem[1] === inItem.y
     );
-    if (!isBlank) {
-      blankNode.push(outItem);
-    }
-  }
+  })
   const index = Math.floor(Math.random() * (blankNode.length - 1));
   const foodX = blankNode[index][0];
   const foodY = blankNode[index][1];
