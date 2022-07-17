@@ -4,27 +4,29 @@ const directionType = {
   up: "up",
   down: "down",
 };
+const mapElement = document.getElementById("map"); // 地element
+const highestScoreELe = document.getElementById("highestScore"); // 最高分数element
+const currentScoreELe = document.getElementById("currentScore"); // 当前分数element
+const model = document.getElementById("model"); // 模式element
+const pauseElement = document.getElementById("pause"); // 暂停element
+// 每个格子的大小
+const nodeSize = 10;
+const maxX = (mapElement.offsetWidth - 4) / nodeSize; // 地图最大的x轴
+const maxY = (mapElement.offsetHeight - 4) / nodeSize; // 地图最大的y轴
 let snakeBody = []; // 蛇身体节点
-const snakeSize = 10; // 节点大小
 let direction = directionType.right; // 蛇头方向 'up、down、right、left'
 let beforeDirection = directionType.right; // 操作前蛇头的方向
-const mapElement = document.getElementById("map"); // 地element
 let food = { x: 5, y: 5 }; // 食物位置
 let snakeElements = []; // 蛇Element
 let isPause = true; // 暂停、继续
 let isBegin = false; // 开始
-let snakeSpeed = 200; // 小蛇移动速度 默认一百毫秒移动一次
-const pauseElement = document.getElementById("pause"); // 暂停element
-const maxX = (mapElement.offsetWidth - 4) / snakeSize; // 地图最大的x轴
-const maxY = (mapElement.offsetHeight - 4) / snakeSize; // 地图最大的y轴
+let snakeSpeed = 100; // 小蛇移动速度 默认一百毫秒移动一次
 let isOverGame = false; // 是否结束游戏
 let raf = null; // requestAnimationFrame的id
-const model = document.getElementById("model"); // 模式element
-const highestScoreELe = document.getElementById("highestScore"); // 最高分数element
-const currentScoreELe = document.getElementById("currentScore"); // 当前分数element
 let highestScore = Number(localStorage.getItem("highestScore") || 0);
 let currentScore = 0; // 当前分数
 let mapNode = []; // 地图的节点
+
 /**
  * 选择模式
  * @param {*} val 执行间隔
@@ -114,11 +116,11 @@ function createSnake() {
   snakeBody.forEach((item) => {
     const snakeNode = document.createElement("div");
     snakeNode.className = "snake";
-    snakeNode.style.width = snakeSize + "px";
-    snakeNode.style.height = snakeSize + "px";
+    snakeNode.style.width = nodeSize + "px";
+    snakeNode.style.height = nodeSize + "px";
     snakeNode.style.background = item.color;
-    snakeNode.style.left = item.x * snakeSize + "px";
-    snakeNode.style.top = item.y * snakeSize + "px";
+    snakeNode.style.left = item.x * nodeSize + "px";
+    snakeNode.style.top = item.y * nodeSize + "px";
     snake.appendChild(snakeNode);
     // snakeElements.push(snakeNode);
   });
@@ -174,7 +176,7 @@ function snakeMove() {
     // 可以随便赋值位置，反正会被覆盖掉
     snakeBody.push({ x: endNode.x, y: endNode.y, color: endNode.color });
     productFood();
-    currentScore = currentScore++;
+    currentScore = currentScore + 1;
     // 记录分数
     currentScoreELe.innerText = currentScore;
   }
@@ -206,12 +208,12 @@ function snakeMove() {
 function productFood() {
   //空节点
   removeFood();
-  const blankNode = mapNode.filter(outItem=>{
+  const blankNode = mapNode.filter((outItem) => {
     // 判断蛇身体在哪些节点上
     return !snakeBody.find(
       (inItem) => outItem[0] === inItem.x && outItem[1] === inItem.y
     );
-  })
+  });
   const index = Math.floor(Math.random() * (blankNode.length - 1));
   const foodX = blankNode[index][0];
   const foodY = blankNode[index][1];
@@ -219,10 +221,10 @@ function productFood() {
   food.y = foodY;
   const foodElem = document.createElement("div");
   foodElem.className = "food";
-  foodElem.style.width = snakeSize + "px";
-  foodElem.style.height = snakeSize + "px";
-  foodElem.style.left = foodX * snakeSize + "px";
-  foodElem.style.top = foodY * snakeSize + "px";
+  foodElem.style.width = nodeSize + "px";
+  foodElem.style.height = nodeSize + "px";
+  foodElem.style.left = foodX * nodeSize + "px";
+  foodElem.style.top = foodY * nodeSize + "px";
   foodElem.id = "food";
   mapElement.appendChild(foodElem);
 }
@@ -255,16 +257,22 @@ function checkSnakeOver() {
   // 边界
   if (headX < 0 || headX >= maxX || headY < 0 || headY >= maxY) {
     newRocord();
-    alert("GAME OVER!");
+    alert("GAME OVER!撞到墙");
   }
-
+  // console.log('... x,y',snakeBody)
   const isKnock = snakeBody.find((item, index) => {
-    if (index) return item.x === headX && item.y === headY;
+    if (index) {
+      if (item.x === headX && item.y === headY) {
+        console.log("... x,y", snakeBody);
+        return true;
+      }
+    }
+    return false;
   });
   // 撞到身体
   if (isKnock) {
     newRocord();
-    alert("GAME OVER!");
+    alert("GAME OVER!撞到身体");
   }
 
   // 是否吃完所有食物
@@ -280,46 +288,36 @@ function checkSnakeOver() {
 function listenKeyboard() {
   let timerHandle = null;
   document.addEventListener("keydown", function (e) {
-    clearTimeout(timerHandle);
     // 防抖
+    clearTimeout(timerHandle);
     timerHandle = setTimeout(() => {
       switch (e.key) {
         // 向左，如果之前蛇头状态向右，蛇头不允许向左
         case "ArrowLeft":
           if (beforeDirection !== directionType.right) {
             direction = directionType.left;
-            beforeDirection = direction;
           }
           break;
         // 向上
         case "ArrowUp":
           if (beforeDirection !== directionType.down) {
             direction = directionType.up;
-            beforeDirection = direction;
           }
           break;
         // 向右
         case "ArrowRight":
           if (beforeDirection !== directionType.left) {
             direction = directionType.right;
-            beforeDirection = direction;
           }
           break;
         // 向下
         case "ArrowDown":
           if (beforeDirection !== directionType.up) {
             direction = directionType.down;
-            beforeDirection = direction;
-          }
-          break;
-        // 向下
-        case "ArrowDown":
-          if (beforeDirection !== directionType.up) {
-            direction = directionType.down;
-            beforeDirection = direction;
           }
           break;
       }
+      beforeDirection = direction;
     }, snakeSpeed);
   });
 }
@@ -329,19 +327,24 @@ function listenKeyboard() {
  * 监听开始暂停键盘事件、最高分数
  */
 window.onload = function initDeployment() {
-  for (let x = 0; x <= 79; x++) {
-    for (let y = 0; y <= 49; y++) {
+  // 列数
+  let lineNum = maxY - 1;
+  // 横数
+  let scrossNum = maxX - 1;
+  // 地图节点个数
+  for (let x = 0; x <= scrossNum; x++) {
+    for (let y = 0; y <= lineNum; y++) {
       mapNode.push([x, y]);
     }
   }
   highestScoreELe.innerText = highestScore;
   document.addEventListener("keydown", function (e) {
     switch (e.key) {
-      // 开始游戏
+      // 空格键暂停、继续
       case " ":
         pause();
         break;
-      // 空格键暂停、继续
+      // 开始游戏
       case "Enter":
         begin();
         break;
