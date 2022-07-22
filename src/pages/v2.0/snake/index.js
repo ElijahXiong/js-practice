@@ -243,10 +243,12 @@ function newRocord() {
   isBegin = false;
   isPause = true;
   model.disabled = false;
+  highestScore = Number(localStorage.getItem("highestScore") || 0);
   if (highestScore < currentScore) {
     localStorage.setItem("highestScore", currentScore);
     highestScoreELe.innerText = currentScore;
   }
+  currentScoreELe.innerText = 0
 }
 /**
  * 检查蛇是否移动到边界、是否撞到身体
@@ -327,6 +329,7 @@ function listenKeyboard() {
  * 监听开始暂停键盘事件、最高分数
  */
 window.onload = function initDeployment() {
+
   // 列数
   let lineNum = maxY - 1;
   // 横数
@@ -337,6 +340,7 @@ window.onload = function initDeployment() {
       mapNode.push([x, y]);
     }
   }
+
   highestScoreELe.innerText = highestScore;
   document.addEventListener("keydown", function (e) {
     switch (e.key) {
