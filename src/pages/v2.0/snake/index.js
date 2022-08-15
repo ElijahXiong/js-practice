@@ -34,25 +34,23 @@ let mapNode = []; // 地图的节点
 function handleModel(val) {
   // 选择模式
   if (isPause) {
-    const index = val.selectedIndex;
-    snakeSpeed = Number(val.options[index].value);
+    snakeSpeed = Number(val.value);
   }
 }
 /**
  * 开始游戏
  */
 function begin() {
-  if (!isBegin) {
-    direction = directionType.right;
-    beforeDirection = directionType.right;
-    initSnakeBody();
-    game();
-    isPause = false;
-    isBegin = true;
-    isOverGame = false;
-    model.disabled = true;
-    currentScore = 0;
-  }
+  if (isBegin) return;
+  direction = directionType.right;
+  beforeDirection = directionType.right;
+  initSnakeBody();
+  game();
+  isPause = false;
+  isBegin = true;
+  isOverGame = false;
+  model.disabled = true;
+  currentScore = 0;
 }
 /**
  * 暂停/继续
@@ -113,17 +111,14 @@ function createSnake() {
   const snake = document.createElement("div");
   snake.id = "snake";
   mapElement.appendChild(snake);
+  let snakeHtml = "";
   snakeBody.forEach((item) => {
-    const snakeNode = document.createElement("div");
-    snakeNode.className = "snake";
-    snakeNode.style.width = nodeSize + "px";
-    snakeNode.style.height = nodeSize + "px";
-    snakeNode.style.background = item.color;
-    snakeNode.style.left = item.x * nodeSize + "px";
-    snakeNode.style.top = item.y * nodeSize + "px";
-    snake.appendChild(snakeNode);
-    // snakeElements.push(snakeNode);
+    let snakeNode = `<div class="snake_node" style="width: ${nodeSize}px;height: ${nodeSize}px;background:${
+      item.color
+    };left:${item.x * nodeSize}px;top:${item.y * nodeSize}px"></div>`;
+    snakeHtml += snakeNode;
   });
+  snake.innerHTML = snakeHtml;
 }
 /**
  * 删除蛇的节点
@@ -176,7 +171,7 @@ function snakeMove() {
     // 可以随便赋值位置，反正会被覆盖掉
     snakeBody.push({ x: endNode.x, y: endNode.y, color: endNode.color });
     productFood();
-    currentScore = currentScore + 1;
+    currentScore += 1;
     // 记录分数
     currentScoreELe.innerText = currentScore;
   }
@@ -248,7 +243,7 @@ function newRocord() {
     localStorage.setItem("highestScore", currentScore);
     highestScoreELe.innerText = currentScore;
   }
-  currentScoreELe.innerText = 0
+  currentScoreELe.innerText = 0;
 }
 /**
  * 检查蛇是否移动到边界、是否撞到身体
@@ -256,12 +251,14 @@ function newRocord() {
 function checkSnakeOver() {
   const headX = snakeBody[0].x;
   const headY = snakeBody[0].y;
+
   // 边界
   if (headX < 0 || headX >= maxX || headY < 0 || headY >= maxY) {
     newRocord();
     alert("GAME OVER!撞到墙");
+    return;
   }
-  // console.log('... x,y',snakeBody)
+
   const isKnock = snakeBody.find((item, index) => {
     if (index) {
       if (item.x === headX && item.y === headY) {
@@ -271,16 +268,19 @@ function checkSnakeOver() {
     }
     return false;
   });
+
   // 撞到身体
   if (isKnock) {
     newRocord();
     alert("GAME OVER!撞到身体");
+    return;
   }
 
   // 是否吃完所有食物
   if (maxX * maxY <= snakeBody.length) {
     newRocord();
     alert("Congratulate!");
+    return;
   }
 }
 
@@ -329,7 +329,6 @@ function listenKeyboard() {
  * 监听开始暂停键盘事件、最高分数
  */
 window.onload = function initDeployment() {
-
   // 列数
   let lineNum = maxY - 1;
   // 横数
