@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>上传</title>
+  </head>
+
+  <body>
+    <div>
+      <!-- 替换 -->
+      <input
+        type="file"
+        id="fileElem"
+        multiple
+        accept="image/*"
+        class="visually-hidden"
+        onchange="handleFiles(this.files)"
+      />
+      <label for="fileElem" class="lable_files">上传</label>
+
+      <!-- 拖拽上传 -->
+      <div id="dropbox" class="drag_files">拖入至此处上传</div>
+
+      <!-- 展示 -->
+      <div id="fileList"></div>
+    </div>
+    <script type="text/javascript">
+      const fileList = document.getElementById("fileList");
+      const dropbox = document.getElementById("dropbox");
+
+      dropbox.addEventListener("dragenter", dragenter, false);
+      dropbox.addEventListener("dragover", dragover, false);
+      dropbox.addEventListener("drop", drop, false);
+      function dragenter(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      function dragover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      function drop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        let dt = e.dataTransfer;
+        let files = dt.files;
+
+        console.log('>>> files',files)
+        handleFiles(files);
+      }
+
+      function updateSize(nBytes) {
+        let sOutput = nBytes + " bytes";
+        // optional code for multiples approximation
+        const aMultiples = [
+          "KB",
+          "MB",
+          "GB",
+          "TB",
+          "PB",
+          "EB",
+          "ZB",
+          "YB",
+        ];
+        for (let nMultiple = 0,nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++ ) {
+          console.log('==============nApprox', nApprox);
+          sOutput =
+            nApprox.toFixed(3) + " " + aMultiples[nMultiple] +
+            " (" +
+            nBytes +
+            " bytes)";
+        }
+        return sOutput;
+      }
+      /**
+       * 展示
+       */
+      function handleFiles(files) {
+        if (!files.length) {
+          fileList.innerHTML = "<p>No files selected!</p>";
+        } else {
+          fileList.innerHTML = "";
+          let list = document.createElement("ul");
+          fileList.appendChild(list);
+          for (let i = 0; i < files.length; i++) {
+            let li = document.createElement("li");
+            list.appendChild(li);
+            let img = document.createElement("img");
+            img.src = URL.createObjectURL(files[i]);
+            img.height = 60;
+            img.onload = function () {
+              URL.revokeObjectURL(this.src);
+            };
+            li.appendChild(img);
+            let info = document.createElement("p");
+            info.innerHTML = `文件名: ${files[i].name} <br> 文件大小: ${updateSize(files[i].size)}`;
+            li.appendChild(info);
+          }
+        }
+      }
+    </script>
+  </body>
+
+  <style>
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px;
+      width: 1px;
+      overflow: hidden;
+      clip-path: inset(1px 1px);
+    }
+
+    /* Separate rule for compatibility, :focus-within is required on modern Firefox and Chrome */
+    input.visually-hidden:focus label {
+      outline: thin dotted;
+    }
+    input.visually-hidden:focus-within label {
+      outline: thin dotted;
+    }
+
+    .drag_files {
+      margin-top: 30px;
+      width: 300px;
+      height: 80px;
+      border: 2px solid #ccc;
+      border-radius: 15px;
+      text-align: center;
+      line-height: 80px;
+    }
+
+    ul,
+    li {
+      list-style: none;
+    }
+    .lable_files {
+      padding: 8px 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 30px;
+    }
+  </style>
+</html>
